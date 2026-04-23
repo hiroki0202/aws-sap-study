@@ -7,6 +7,7 @@
   <meta name="description" content="AWS Solutions Architect Professional 学習サイト">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts/dist/docsify-plugin-flexible-alerts.min.css">
   <style>
     :root {
       --theme-color: #232f3e;
@@ -25,6 +26,22 @@
     .markdown-section table {
       display: table;
       width: 100%;
+    }
+    /* flexible-alerts: 試験ポイント */
+    .alert.alert-exam {
+      border-left: 4px solid #1a73e8;
+      background-color: #e8f0fe;
+    }
+    .alert.alert-exam .alert-title {
+      color: #1a73e8;
+    }
+    /* flexible-alerts: 落とし穴 */
+    .alert.alert-trap {
+      border-left: 4px solid #d93025;
+      background-color: #fce8e6;
+    }
+    .alert.alert-trap .alert-title {
+      color: #d93025;
     }
     @media (max-width: 768px) {
       .markdown-section {
@@ -56,12 +73,46 @@
         paths: 'auto'
       },
       auto2top: true,
-      coverpage: false
+      coverpage: false,
+      pagination: {
+        previousText: '← 前のテーマ',
+        nextText: '次のテーマ →',
+        crossChapter: true,
+        crossChapterText: true
+      },
+      'flexible-alerts': {
+        style: 'flat',
+        note: { label: '📝 メモ' },
+        tip: { label: '💡 ポイント' },
+        warning: { label: '⚠️ 注意' },
+        danger: { label: '🚫 落とし穴' },
+        exam: {
+          label: '🎯 試験ポイント',
+          icon: 'fa fa-bookmark',
+          className: 'exam'
+        },
+        trap: {
+          label: '🪤 典型トラップ',
+          icon: 'fa fa-exclamation-triangle',
+          className: 'trap'
+        }
+      },
+      tabs: {
+        persist: true,
+        sync: false,
+        theme: 'classic',
+        tabComments: true,
+        tabHeadings: true
+      }
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts/dist/docsify-plugin-flexible-alerts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
 </body>
 </html>

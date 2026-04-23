@@ -1,5 +1,6 @@
 * [🏠 ホーム](/)
 * [📋 カリキュラム](curriculum.md)
+* [❌ 間違い復習ノート](mistakes.md)
 
 * **Phase 1: ガバナンス**
   * [テーマ1: Organizations + SCP](themes/01-organizations-scp.md)
@@ -22,24 +23,26 @@
   * [テーマ12: S3運用](themes/12-s3-operations.md)
   * [テーマ13: 共有ストレージ](themes/13-shared-storage.md)
 
-* **Phase 5: サーバーレス**
+* **Phase 5: 移行 + ハイブリッド** ← 配点20%
+  * [テーマ24: 移行戦略 + ハイブリッド](themes/24-migration.md)
+
+* **Phase 6: サーバーレス + イベント駆動**
   * [テーマ14: Lambda統合](themes/14-lambda.md)
   * [テーマ15: 非同期処理](themes/15-async-patterns.md)
   * [テーマ16: API Gateway](themes/16-api-gateway.md)
 
-* **Phase 6: コンピュート + コスト**
+* **Phase 7: CI/CD + DevOps** ← Domain 3（25%）
+  * [テーマ25: CI/CD + DevOps](themes/25-cicd.md)
+
+* **Phase 8: コンピュート + コスト**
   * [テーマ17: Auto Scaling](themes/17-auto-scaling.md)
   * [テーマ18: コスト最適化](themes/18-cost-optimization.md)
 
-* **Phase 7: データ分析**
+* **Phase 9: データ分析**
   * [テーマ19: 分析基盤](themes/19-analytics.md)
   * [テーマ20: ストリーム処理](themes/20-streaming.md)
 
-* **Phase 8: AI/ML + IoT**
+* **Phase 10: AI/ML + IoT + メディア**
   * [テーマ21: AI/MLサービス](themes/21-ai-ml.md)
   * [テーマ22: IoT](themes/22-iot.md)
-  * [テーマ23: メディア配信](themes/23-media.md)
-
-* **Phase 9: 移行 + DevOps**
-  * [テーマ24: 移行 + ハイブリッド](themes/24-migration.md)
-  * [テーマ25: CI/CD](themes/25-cicd.md)
+  * [テーマ23: メディア配信 + 通知](themes/23-media.md)

@@ -1,0 +1,116 @@
+name: 間違い復習リマインダー
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # 毎日 JST 06:00
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 復習対象を抽出
+        id: extract
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          echo "today=$TODAY" >> $GITHUB_OUTPUT
+
+          python3 - <<'EOF'
+          import re, sys
+          from datetime import date
+
+          today = date.today()
+
+          with open("mistakes.md", encoding="utf-8") as f:
+              content = f.read()
+
+          rows = []
+          for line in content.splitlines():
+              # テーブル行（ヘッダーと区切り行を除く）
+              if not line.startswith("|"):
+                  continue
+              cols = [c.strip() for c in line.strip("|").split("|")]
+              if len(cols) < 6:
+                  continue
+              # ヘッダー行・区切り行をスキップ
+              if cols[0] in ("問題番号", "---", ""):
+                  continue
+              if "---" in cols[4]:
+                  continue
+              try:
+                  review_date = date.fromisoformat(cols[4])
+              except ValueError:
+                  continue
+              if review_date <= today:
+                  rows.append({
+                      "問題番号": cols[0],
+                      "間違えた日": cols[1],
+                      "正解": cols[2],
+                      "誤答": cols[3],
+                      "次回見直し日": cols[4],
+                      "メモ": cols[5],
+                  })
+
+          if not rows:
+              print("NO_ITEMS")
+              with open("/tmp/review_items.txt", "w") as f:
+                  f.write("")
+          else:
+              lines = [f"今日の復習対象: {len(rows)}問\n"]
+              for r in rows:
+                  lines.append(f"- **{r['問題番号']}**  正解:{r['正解']} / 誤答:{r['誤答']}  _{r['メモ']}_")
+              body = "\n".join(lines)
+              print(body)
+              with open("/tmp/review_items.txt", "w") as f:
+                  f.write(body)
+          EOF
+
+          COUNT=$(wc -l < /tmp/review_items.txt | tr -d ' ')
+          echo "has_items=$([ $COUNT -gt 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
+
+      - name: GitHub Actions サマリーに出力
+        run: |
+          TODAY=${{ steps.extract.outputs.today }}
+          echo "## 📚 $TODAY の復習リスト" >> $GITHUB_STEP_SUMMARY
+          if [ -s /tmp/review_items.txt ]; then
+            cat /tmp/review_items.txt >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ 今日の復習対象はありません" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Issue を作成（復習対象あり）
+        if: steps.extract.outputs.has_items == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('/tmp/review_items.txt', 'utf8');
+            const today = '${{ steps.extract.outputs.today }}';
+
+            // 同じ日付の既存 Issue があれば作らない
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: '復習',
+            });
+            const duplicate = existing.data.find(i => i.title.includes(today));
+            if (duplicate) {
+              console.log('既存 Issue あり: ' + duplicate.html_url);
+              return;
+            }
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📚 復習リスト ${today}`,
+              body: body,
+              labels: ['復習'],
+            });
+            console.log('Issue 作成: ' + issue.data.html_url);
